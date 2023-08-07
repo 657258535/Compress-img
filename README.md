@@ -1,2 +1,3 @@
 # Compress-img
- 批量压缩png jpg jpeg webp， 批量更改图片尺寸
+ 批量压缩png jpg jpeg webp， 批量更改图片尺寸 , 批量转换格式
+ 这一切都是基于本地执行,不会将您的数据上传到服务器,任何人有权随时查阅源代码
