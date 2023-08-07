@@ -181,16 +181,14 @@
                 //接来下就是压缩canvas 通过API将canvas输出成base64格式
                 if(name.endsWith('.png')){
                     var compressImage = canvas.toDataURL('image/png', ysl);
-                }else if(name.endsWith('.jpg')){
-                    var compressImage = canvas.toDataURL('image/jpg', ysl);
-                }else if(name.endsWith('.jpeg')){
+                }else if(name.endsWith('.jpeg') || name.endsWith('.jpg')){
                     var compressImage = canvas.toDataURL('image/jpeg', ysl);
                 }else if(name.endsWith('.webp')){
                     var compressImage = canvas.toDataURL('image/webp', ysl);
                 }else{
-                     var compressImage = canvas.toDataURL('image/jpeg', ysl);
+                    var compressImage = canvas.toDataURL('image/jpeg', ysl);
                 }
-                console.log(ysl)
+                console.log("Compress:"+ysl);
                 //  const compressImage = canvas.toDataURL('image/png', 0.8);
                 callback && callback(compressImage); // 压缩完成进行后台传输逻辑
                 // 压缩完的图片就已经保存在内存(compressImage)中了 
