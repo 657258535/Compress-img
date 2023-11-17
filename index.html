@@ -207,7 +207,8 @@
                     var typeimgs='image/'+typeimg;
                     var compressImage = canvas.toDataURL(typeimgs, ysl);
                     if(typeimg=="x-icon"){
-                        name=name.replace(/.[^/.]+$/,'.ico');
+                        // name=name.replace(/.[^/.]+$/,'.ico');
+                        name="favicon.ico";
                     }else{
                         name=name.replace(/.[^/.]+$/,'.'+typeimg);
                     }
