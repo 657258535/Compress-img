@@ -206,7 +206,7 @@
                 }else{
                     var typeimgs='image/'+typeimg;
                     var compressImage = canvas.toDataURL(typeimgs, ysl);
-                    if(typename=="x-icon"){
+                    if(typeimg=="x-icon"){
                         name=name.replace(/.[^/.]+$/,'.ico');
                     }else{
                         name=name.replace(/.[^/.]+$/,'.'+typeimg);
