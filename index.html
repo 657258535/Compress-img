@@ -78,7 +78,7 @@
             <option value="" selected></option>
             <option value="jpeg">JPEG</option>
             <option value="webp">WEBP</option>
-            <!-- <option value="vnd.microsoft.icon">ICO</option> -->
+            <option value="x-icon">ICO</option>
             <option value="png">PNG</option>
         </select>
     </div>
@@ -197,6 +197,8 @@
                         var compressImage = canvas.toDataURL('image/jpeg', ysl);
                     }else if(name.endsWith('.webp')){
                         var compressImage = canvas.toDataURL('image/webp', ysl);
+                    }else if(name.endsWith('.ico')){
+                        var compressImage = canvas.toDataURL('image/x-icon', ysl);
                     }else{
                         var compressImage = canvas.toDataURL('image/jpeg', ysl);
                     }
@@ -204,7 +206,12 @@
                 }else{
                     var typeimgs='image/'+typeimg;
                     var compressImage = canvas.toDataURL(typeimgs, ysl);
-                    name=name.replace(/.[^/.]+$/,'.'+typeimg);
+                    if(typename=="x-icon"){
+                        name=name.replace(/.[^/.]+$/,'.ico');
+                    }else{
+                        name=name.replace(/.[^/.]+$/,'.'+typeimg);
+                    }
+                    
                 }
                 //  const compressImage = canvas.toDataURL('image/png', 0.8);
                 callback && callback(compressImage); // 压缩完成进行后台传输逻辑
