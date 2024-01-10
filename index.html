@@ -108,13 +108,14 @@
     </div>
     
     <script>
+        const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
         const ACCEPT = ['image/jpg', 'image/png', 'image/jpeg','image/webp','image/x-icon']
         const upload = document.getElementById("file");
         const MAXSIZE = 1024 * 1024 * 100;
         const MAXTIP = "100MB";
         var Sel=document.getElementById("Compress");
         var Sel2=document.getElementById("imgtype");
-        upload.addEventListener('change', function (e) {
+        upload.addEventListener('change', async function (e) {
             // 获取上传的文件 解构Arry 拿到第一个元素
             const file = e.target.files;
             if (!file.length) {
@@ -137,6 +138,7 @@
             convertImageToBase64(file[i],file[i].name, (base64Image,name) => {
                 compress(base64Image,name, uploadToServer)
             });
+            await sleep(500);
            }
            document.getElementById("file").value="";
         });
@@ -281,7 +283,7 @@
             event.preventDefault();
         });
         // 获取拖放文件的内容
-        dragDropArea.addEventListener('drop', function(event) {
+        dragDropArea.addEventListener('drop', async function(event) {
             event.preventDefault();
             var file = event.dataTransfer.files;
             // 获取上传的文件 解构Arry 拿到第一个元素
@@ -303,6 +305,7 @@
             convertImageToBase64(file[i],file[i].name, (base64Image,name) => {
                 compress(base64Image,name, uploadToServer)
             });
+            await sleep(500);
            }
         });
     </script>
