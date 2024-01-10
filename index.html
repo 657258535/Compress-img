@@ -135,8 +135,8 @@
             }
             console.log(file[i].name,file[i].size,file[i].type);
             // 压缩图片 需要转成base64进行压缩
-            convertImageToBase64(file[i],file[i].name, (base64Image,name) => {
-                compress(base64Image,name, uploadToServer)
+            await convertImageToBase64(file[i],file[i].name, async (base64Image,name) => {
+                await compress(base64Image,name, uploadToServer)
             });
             await sleep(500);
            }
@@ -302,8 +302,8 @@
             }
             console.log(file[i].name,file[i].size,file[i].type);
             // 压缩图片 需要转成base64进行压缩
-            convertImageToBase64(file[i],file[i].name, (base64Image,name) => {
-                compress(base64Image,name, uploadToServer)
+            await convertImageToBase64(file[i],file[i].name, async (base64Image,name) => {
+                await compress(base64Image,name, uploadToServer)
             });
             await sleep(500);
            }
