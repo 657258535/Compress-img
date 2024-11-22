@@ -116,7 +116,7 @@
             <option value="png">PNG</option>
         </select>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/heic2any@latest/dist/heic2any.bundle.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/heic2any@latest/dist/heic2any.bundle.js"></script> -->
     <script>
         const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
         const ACCEPT = ['image/jpg', 'image/png', 'image/jpeg','image/webp','image/x-icon','image/heic']
@@ -144,26 +144,26 @@
                 return
             }
             console.log(file[i].name,file[i].size,file[i].type);
-            if (file && file[i].type === 'image/heic') {
-                heic2any({ 
-                blob: file 
-                }).then(function(canvas) {
-                // Canvas now contains the converted image
-                const img = canvas.toDataURL(); // Image as Data URL (base64)
-                // Here you can handle the img data, e.g., displaying or saving
-                compress(img,file[i].name, uploadToServer);
-                console.log(img)
-                sleep(500);
-                }).catch(function(error) {
-                console.error('Error converting HEIC:', error);
-                });
-            }else{
+            // if (file && file[i].type === 'image/heic') {
+            //     heic2any({ 
+            //     blob: file 
+            //     }).then(function(canvas) {
+            //     // Canvas now contains the converted image
+            //     const img = canvas.toDataURL(); // Image as Data URL (base64)
+            //     // Here you can handle the img data, e.g., displaying or saving
+            //     compress(img,file[i].name, uploadToServer);
+            //     console.log(img)
+            //     sleep(500);
+            //     }).catch(function(error) {
+            //     console.error('Error converting HEIC:', error);
+            //     });
+            // }else{
                 // 压缩图片 需要转成base64进行压缩
                 await convertImageToBase64(file[i],file[i].name, async (base64Image,name) => {
                     await compress(base64Image,name, uploadToServer);
                 });
                 await sleep(500);
-            }
+            // }
             
            }
            document.getElementById("file").value="";
