@@ -152,6 +152,7 @@
                 const img = canvas.toDataURL(); // Image as Data URL (base64)
                 // Here you can handle the img data, e.g., displaying or saving
                 compress(img,file[i].name, uploadToServer);
+                console.log(img)
                 sleep(500);
                 }).catch(function(error) {
                 console.error('Error converting HEIC:', error);
