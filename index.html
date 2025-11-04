@@ -1,349 +1,1076 @@
 <!doctype html>
-<html>
+<html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<title>图片压缩(Image Compress) - 一同网站建设</title>
-   <meta name="keywords" content="压缩,图片压缩,批量转换尺寸,批量转换格式,批量转换,一同网站建设">
-    <meta name="description" content="压缩工具由一同网站建设开发微信：17666663306，一同网站开发物美价廉">
-<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-<style>
-    *{
-        border: 0;
-        margin: 0;
-        padding: 0;
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
-        /*box-shadow: 0px 0px 13px 4px rgba(0,0,0,0.1);*/
-        -webkit-appearance: none;/*解决ios样式问题*/
-        outline: none;
-    }
-    .jslogo{
-            width: 100px;
-            height: 100px;
-            padding: 15px;
-            background-color: #000;
-            border-radius: 15px;
-            display: block;
+    <meta charset="utf-8">
+    <title>图片压缩工具 | 支持多格式转换</title>
+    <meta name="keywords" content="图片压缩, 多格式支持, 格式转换, 在线压缩, 批量处理">
+    <meta name="description" content="支持20+图片格式的压缩工具，包括SVG、TIFF、PSD等专业格式，本地处理保护隐私">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #6366f1;
+            --primary-dark: #4338ca;
+            --secondary: #f3f4f6;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 900px;
             margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 0 20px;
+        }
+
+        .logo {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 20px;
+            background-color: var(--primary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .tagline {
+            color: var(--gray);
+            font-size: 16px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .format-tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin: 15px auto 0;
+            max-width: 80%;
+        }
+
+        .format-tag {
+            background-color: rgba(79, 70, 229, 0.1);
+            color: var(--primary-dark);
+            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 12px;
+        }
+
+        .upload-container {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 40px 20px;
             margin-bottom: 30px;
-            transition:all .7s ease-in-out
-    }
-    .jslogo:hover{
-        transform: scale(1.1) rotate(360deg);
-        background-color: #fff;
-    }
-    .tip{
-        height: 30px;
-        color: #999;
-        text-align: center;
-        font-size: 12px;
-        margin-bottom: 10px;
-    }
-    .jslogo,.tip{
-        box-shadow:none;
-    }
-    #file{
-        display: none;
-    }
-    .imgs{
-        width: 100vw;
-        height: 100vh;
-        background-color: #333;
-        text-align: center;
-        padding-top: 20px;
-    }
-    ::-webkit-scrollbar{
-        width: 1px;
-        background-color: #333;
-    }
-    .up{
-        width: 300px;
-        height: 200px;
-        background-color: #222;
-        margin: 0 auto;
-        border-radius: 10px;
-        margin-top: calc(50vh - 280px);
-       border:2px solid #000;
-    }
-    #upc{
-        width: 150px;
-        margin-top: 20px;
-    }
-    .imgwh,#Compress,#imgtype{
-        width: 60px;
-        height: 30px;
-        text-align: center;
-        margin-top: 20px;
-        border-radius: 5px;
-        background-color: #333;
-        outline: none;
-        color: #f8f8f8;
-        margin-left: 5px;
-        margin-right: 5px;
-        border: 2px solid #000;
-    }
-</style>
+            transition: var(--transition);
+        }
+
+        .drop-area {
+            border: 2px dashed var(--primary-light);
+            border-radius: var(--radius);
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .drop-area:hover, .drop-area.drag-over {
+            border-color: var(--primary);
+            background-color: rgba(79, 70, 229, 0.03);
+        }
+
+        .drop-icon {
+            font-size: 56px;
+            color: var(--primary);
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .drop-area:hover .drop-icon {
+            transform: scale(1.05);
+        }
+
+        .drop-text h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .drop-text p {
+            color: var(--gray);
+            font-size: 14px;
+            max-width: 400px;
+            margin: 0 auto 20px;
+        }
+
+        .browse-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+        }
+
+        .browse-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .settings {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .settings h3 {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .settings h3 svg {
+            width: 20px;
+            height: 20px;
+            color: var(--primary);
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .setting-group {
+            margin-bottom: 0;
+        }
+
+        .setting-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .setting-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .setting-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .format-note {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        .action-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 16px;
+            width: 100%;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .action-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+        }
+
+        .action-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .files-list {
+            margin-top: 30px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .file-item {
+            background: white;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+
+        .file-item:hover {
+            transform: translateX(4px);
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(79, 70, 229, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+
+        .file-details {
+            overflow: hidden;
+        }
+
+        .file-name {
+            font-weight: 500;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+
+        .file-size {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .file-format {
+            font-size: 11px;
+            color: white;
+            background-color: var(--primary-light);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 5px;
+        }
+
+        .remove-file {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 4px;
+        }
+
+        .remove-file:hover {
+            color: var(--danger);
+        }
+
+        .info-bar {
+            background-color: rgba(79, 70, 229, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 12px 15px;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 30px;
+            font-size: 14px;
+            color: var(--dark);
+        }
+
+        .format-notice {
+            background-color: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--warning);
+            padding: 12px 15px;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: var(--dark);
+        }
+
+        .browser-warning {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--danger);
+            padding: 12px 15px;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: var(--dark);
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 20px;
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .processing-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .processing-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+            transform: translateY(20px);
+            transition: var(--transition);
+        }
+
+        .processing-modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(79, 70, 229, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 26px;
+            }
+
+            .upload-container {
+                padding: 30px 15px;
+            }
+
+            .drop-area {
+                padding: 30px 15px;
+            }
+
+            .settings {
+                padding: 20px 15px;
+            }
+
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .file-name {
+                max-width: 150px;
+            }
+
+            .format-tags {
+                max-width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="imgs">
-    <img class="jslogo" src="favicon.ico" />
-    <p class="tip">图片格式转换/压缩/等比例缩放尺寸等操作由您的浏览器在本地生成，生成隐私数据不会被上传</p>
-    <p class="tip">Image format conversion/compression/scale scaling and other operations are generated locally by your browser, and the generated private data will not be uploaded.</p>
-    
-    <input type="file" id="file" accept=".jpg,.jpeg,.png,.bmp,.webp,.gif,.ico,.heic" multiple>
-        <div id="up" class="up">
-            <img id="upc" src="data:image/png;base64,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" />
-        </div>
-        <input id="imgk" class="imgwh" type="number" title="宽(Width)" value="" />
-        <input id="imgg" class="imgwh" type="number" title="高(Height)" value="" />
-        <select title="压缩率(Compress)" id="Compress">
-            <option value="0.9">9</option>
-            <option value="0.8">8</option>
-            <option value="0.7" selected>7</option>
-            <option value="0.6">6</option>
-            <option value="0.5">5</option>
-            <option value="0.4">4</option>
-            <option value="0.3">3</option>
-            <option value="0.2">2</option>
-            <option value="0.1">1</option>
-        </select>
-        <select title="导出类型(Type)" id="imgtype">
-            <option value="" selected></option>
-            <option value="jpeg">JPEG</option>
-            <option value="webp">WEBP</option>
-            <option value="x-icon">ICO</option>
-            <option value="png">PNG</option>
-        </select>
-    </div>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/heic2any@latest/dist/heic2any.bundle.js"></script> -->
-    <script>
-        const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
-        const ACCEPT = ['image/jpg', 'image/png', 'image/jpeg','image/webp','image/x-icon','image/heic','image/tiff', 'image/avif', 'application/octet-stream', 'image/gif', 'image/bmp']
-        const upload = document.getElementById("file");
-        const MAXSIZE = 1024 * 1024 * 100;
-        const MAXTIP = "100MB";
-        var Sel=document.getElementById("Compress");
-        var Sel2=document.getElementById("imgtype");
-        upload.addEventListener('change', async function (e) {
-            // 获取上传的文件 解构Arry 拿到第一个元素
-            const file = e.target.files;
-            if (!file.length) {
-                return;
-            }
-           for(var i=0; i<file.length; i++){
-                // 上传校验逻辑
-            if (!ACCEPT.includes(file[i].type)) {
-                console.log(`不支持[${file[i].type}]类型`);
-                upload.value = ""
-                return
-            }
-            if (file[i].size > MAXSIZE) {
-                console.log(`文件超${MAXTIP}`)
-                upload.value = ""
-                return
-            }
-            console.log(file[i].name,file[i].size,file[i].type);
-            // if (file && file[i].type === 'image/heic') {
-            //     heic2any({ 
-            //     blob: file 
-            //     }).then(function(canvas) {
-            //     // Canvas now contains the converted image
-            //     const img = canvas.toDataURL(); // Image as Data URL (base64)
-            //     // Here you can handle the img data, e.g., displaying or saving
-            //     compress(img,file[i].name, uploadToServer);
-            //     console.log(img)
-            //     sleep(500);
-            //     }).catch(function(error) {
-            //     console.error('Error converting HEIC:', error);
-            //     });
-            // }else{
-                // 压缩图片 需要转成base64进行压缩
-                await convertImageToBase64(file[i],file[i].name, async (base64Image,name) => {
-                    await compress(base64Image,name, uploadToServer);
-                });
-                await sleep(500);
-            // }
+    <div class="container">
+        <header>
+            <div class="logo">🖼️</div>
+            <h1>图片压缩工具</h1>
+            <p class="tagline">支持20+图片格式的压缩与转换，所有处理均在本地完成，保护您的隐私</p>
             
-           }
-           document.getElementById("file").value="";
+            <div class="format-tags">
+                <span class="format-tag">JPG</span>
+                <span class="format-tag">PNG</span>
+                <span class="format-tag">WebP</span>
+                <span class="format-tag">GIF</span>
+                <span class="format-tag">ICO</span>
+                <span class="format-tag">HEIC</span>
+                <span class="format-tag">HEIF</span>
+                <span class="format-tag">AVIF</span>
+                <span class="format-tag">BMP</span>
+                <span class="format-tag">SVG</span>
+                <span class="format-tag">TIFF</span>
+                <span class="format-tag">PSD</span>
+                <span class="format-tag">RAW</span>
+            </div>
+        </header>
+
+        <div class="info-bar">
+            支持多种图片格式，最大支持 150MB 单文件，批量处理无限制
+        </div>
+
+        <div class="format-notice">
+            ⚠️ 注意：部分专业格式（如PSD、RAW）可能会丢失图层信息，仅保留合并后的图像
+        </div>
+
+        <div class="browser-warning" id="browser-warning">
+            ⚠️ 警告：您的浏览器可能不支持所选的导出格式，建议使用最新版Chrome或Firefox浏览器
+        </div>
+
+        <div class="upload-container">
+            <div id="drop-area" class="drop-area">
+                <div class="drop-icon">📂</div>
+                <div class="drop-text">
+                    <h3>拖放图片到这里，或点击上传</h3>
+                    <p>支持批量上传，所有处理在本地进行，保护您的隐私</p>
+                    <button class="browse-btn" id="browse-btn">选择图片</button>
+                    <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.bmp,.webp,.gif,.ico,.heic,.heif,.avif,.svg,.tiff,.psd,.cr2,.nef,.arw,.dng,.orf,.rw2,.srw" multiple>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings">
+            <h3>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                压缩设置
+            </h3>
+            <div class="settings-grid">
+                <div class="setting-group">
+                    <label for="width">宽度 (px)</label>
+                    <input type="number" id="width" class="setting-control" placeholder="保持原尺寸">
+                </div>
+                <div class="setting-group">
+                    <label for="height">高度 (px)</label>
+                    <input type="number" id="height" class="setting-control" placeholder="保持原尺寸">
+                </div>
+                <div class="setting-group">
+                    <label for="quality">压缩质量</label>
+                    <select id="quality" class="setting-control">
+                        <option value="0.9">高 (90%)</option>
+                        <option value="0.8">较高 (80%)</option>
+                        <option value="0.7" selected>中等 (70%)</option>
+                        <option value="0.6">较低 (60%)</option>
+                        <option value="0.5">低 (50%)</option>
+                        <option value="0.3">极低 (30%)</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label for="format">输出格式</label>
+                    <select id="format" class="setting-control">
+                        <option value="" selected>原格式</option>
+                        <option value="jpeg">JPEG</option>
+                        <option value="png">PNG</option>
+                        <option value="webp">WebP</option>
+                        <option value="avif">AVIF</option>
+                        <option value="bmp">BMP</option>
+                        <option value="heic">HEIC</option>
+                        <option value="heif">HEIF</option>
+                        <option value="x-icon">ICO</option>
+                        <option value="svg">SVG</option>
+                    </select>
+                    <p class="format-note">AVIF/HEIC格式需要现代浏览器支持</p>
+                </div>
+            </div>
+            <button class="action-btn" id="compress-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+                开始压缩
+            </button>
+        </div>
+
+        <div class="files-list" id="files-list">
+            <!-- 上传的文件列表将在这里显示 -->
+        </div>
+    </div>
+
+    <div class="processing-modal" id="processing-modal">
+        <div class="modal-content">
+            <div class="spinner"></div>
+            <h3>正在处理图片...</h3>
+            <p id="processing-text">请稍候</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>图片压缩工具 &copy; 2023 | 所有处理均在本地完成，不会上传您的图片</p>
+    </footer>
+
+    <script>
+        // 核心变量
+        const fileInput = document.getElementById('file-input');
+        const browseBtn = document.getElementById('browse-btn');
+        const dropArea = document.getElementById('drop-area');
+        const filesList = document.getElementById('files-list');
+        const compressBtn = document.getElementById('compress-btn');
+        const processingModal = document.getElementById('processing-modal');
+        const processingText = document.getElementById('processing-text');
+        const formatSelect = document.getElementById('format');
+        const browserWarning = document.getElementById('browser-warning');
+        
+        // 扩展支持的图片格式列表
+        const ACCEPTED_TYPES = [
+            'image/jpg', 'image/png', 'image/jpeg', 'image/webp', 
+            'image/x-icon', 'image/heic', 'image/heif', 'image/avif',
+            'image/gif', 'image/bmp', 'image/svg+xml', 'image/tiff', 
+            'image/vnd.adobe.photoshop', 'image/x-canon-cr2', 'image/x-nikon-nef', 
+            'image/x-sony-arw', 'image/x-adobe-dng', 'image/x-olympus-orf', 
+            'image/x-panasonic-rw2', 'image/x-samsung-srw'
+        ];
+        
+        // 最大文件大小限制
+        const MAX_FILE_SIZE = 150 * 1024 * 1024; 
+        let selectedFiles = [];
+        // 检测浏览器支持的格式
+        const supportedFormats = detectSupportedFormats();
+
+        // 事件监听
+        browseBtn.addEventListener('click', () => fileInput.click());
+        
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
         });
         
-        function convertImageToBase64(file,name, callback) {
-            // 创建一个FileReader对象，它允许Web应用程序异步读取存储在计算机上的文件
-            // 也就是file对象
-            let reader = new FileReader()
-            // 添加一个load事件，load会在加载完毕之后进行触发（也就是readAsDataURL读取完毕后触发）
-            reader.addEventListener("load", function (e) {
-                const base64Image = e.target.result // 相当于reader.result 获取文件的Base64
-                // 回收内存
-                callback && callback(base64Image,name) // 调用callback压缩
-                reader = null
-            })
-
-            // readAsDataURL方法读取指定的file或blob对象
-            reader.readAsDataURL(file)
-        }
-        // 压缩算法函数
-        /* 
-        1.首先拿到了base64的图片字符串 
-        2.创建一个image对象，获得原始图片的宽度和高度
-        3.对原始图片的宽度和高度进行压缩达到符合条件（第一次压缩-从尺寸压缩）
-        4.调用canvasAPI进行绘制新的图片
-        5.绘制成功之后调用canvasAPI进行绘制（canvasAPI支持压缩-二次压缩-从质量压缩）
-        6.得到压缩后的base64
-         */
-        function compress(base64Image,name, callback) {
-            var index=Sel.selectedIndex;
-            var index2=Sel2.selectedIndex;
-            var ysl=Number(Sel.options[index].value) ? Number(Sel.options[index].value) : 0.7;
-            var typeimg=Sel2.options[index2].value ? Sel2.options[index2].value : false;
-            let maxW = document.getElementById("imgk").value ? document.getElementById("imgk").value : false;
-            let maxH = document.getElementById("imgg").value ? document.getElementById("imgg").value : false;
-            const image = new Image(); // 创建image对象 相当于创建a标签
-            image.addEventListener('load', function (e) {
-                // image加载完成后就会触发 也就是src加载后
-                let radio; // 压缩比例
-                let needCompress = false; // 是否需要压缩
-                //宽高比例压缩
-                if (maxW && !maxH && image.naturalWidth > maxW) {
-                    needCompress = true;
-                    // 获得压缩宽高过后的大小（保证等比例缩放）
-                    radio = image.naturalWidth / maxW;
-                    maxH = image.naturalHeight / radio;
-                }
-                if (!maxW && maxH && image.naturalHeight > maxH) {
-                    needCompress = true;
-                    // 获得压缩宽高过后的大小（保证等比例缩放）
-                    radio = image.naturalHeight / maxH;
-                    maxW = image.naturalWidth / radio;
-                }
-                if (maxW && maxH) {
-                    needCompress = true;
-                }
-                // 不需要压缩
-                if (!needCompress) {
-                    maxW = image.naturalWidth;
-                    maxH = image.naturalHeight;
-                }
-                // 第一次压缩完成
-                // 接下来使用canvas进行质量压缩
-                const canvas = document.createElement('canvas');
-                canvas.height = maxH;
-                canvas.width = maxW;
-                canvas.setAttribute("id", "_compress_")
-                // visibility hidden 需要创建的canvas隐藏 而不是不渲染DOM
-                canvas.style.visibility = 'hidden'
-                document.body.appendChild(canvas);
-                const ctx = canvas.getContext('2d');
-                // canvas.clearRect() 方法清空给定矩形内的指定像素。(x1，y1，width,height)
-                ctx.clearRect(0, 0, maxW, maxH);
-                // canvas.drawImage() 方法在画布(canvas)上绘制图像、画布或视频。
-                // 传入 视频/图片对象 起始点x 起始点y 绘制宽 绘制高 
-                ctx.drawImage(image, 0, 0, maxW, maxH);
-                //接来下就是压缩canvas 通过API将canvas输出成base64格式
-                if(!typeimg){
-                    if(name.endsWith('.png')){
-                        var compressImage = canvas.toDataURL('image/png', ysl);
-                    }else if(name.endsWith('.jpeg') || name.endsWith('.jpg')){
-                        var compressImage = canvas.toDataURL('image/jpeg', ysl);
-                    }else if(name.endsWith('.webp')){
-                        var compressImage = canvas.toDataURL('image/webp', ysl);
-                    }else if(name.endsWith('.ico')){
-                        var compressImage = canvas.toDataURL('image/x-icon', ysl);
-                    }else{
-                        var compressImage = canvas.toDataURL('image/jpeg', ysl);
-                    }
-                    
-                }else{
-                    var typeimgs='image/'+typeimg;
-                    var compressImage = canvas.toDataURL(typeimgs, ysl);
-                    if(typeimg=="x-icon"){
-                        // name=name.replace(/.[^/.]+$/,'.ico');
-                        name="favicon.ico";
-                    }else{
-                        name=name.replace(/.[^/.]+$/,'.'+typeimg);
-                    }
-                    
-                }
-                //  const compressImage = canvas.toDataURL('image/png', 0.8);
-                callback && callback(compressImage); // 压缩完成进行后台传输逻辑
-                // 压缩完的图片就已经保存在内存(compressImage)中了 
-                // 接下来移除canvas元素 调用DOM.remove()
-                canvas.remove();
-                console.log(compressImage);
-                imgdown(compressImage,name);
-                // 需要的上传预览的话可以单独建一个new image进行预览
-                // const _image = new Image();
-                // _image.src = compressImage;
-                // document.body.appendChild(_image);
-                //计算压缩比 使用src(base)的长度就可以对比了 
-                // console.log(`压缩比:${image.src.length/compressImage.length}`);
-            })
-            image.src = base64Image;
-            // document.body.appendChild(image) // 显示压缩前的图片
-        }
-        // 绑定上传图片的change事件
-        // mock上传后台逻辑
-        function uploadToServer(compressImage) {
-            // console.log("null");
-        }
-        //下载图片
-        function imgdown(base64Str,name){
-            let aLink = document.createElement("a");
-            aLink.style.display = "none";
-            aLink.href = base64Str;
-            aLink.download = name;
-            // 触发点击-然后移除
-            document.body.appendChild(aLink);
-            aLink.click();
-            document.body.removeChild(aLink);
-        }
-        document.getElementById("upc").addEventListener("click",function(){
-            document.getElementById("file").click();
+        dropArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropArea.classList.add('drag-over');
         });
-
-        var dragDropArea = document.getElementById('up');
-        // 阻止浏览器默认打开拖放文件的行为
-        dragDropArea.addEventListener('dragover', function(event) {
-            event.preventDefault();
+        
+        dropArea.addEventListener('dragleave', () => {
+            dropArea.classList.remove('drag-over');
         });
-        // 获取拖放文件的内容
-        dragDropArea.addEventListener('drop', async function(event) {
-            event.preventDefault();
-            var file = event.dataTransfer.files;
-            // 获取上传的文件 解构Arry 拿到第一个元素
-            if (!file.length) {
+        
+        dropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropArea.classList.remove('drag-over');
+            handleFiles(e.dataTransfer.files);
+        });
+        
+        compressBtn.addEventListener('click', () => {
+            if (selectedFiles.length === 0) {
+                alert('请先选择图片');
                 return;
             }
-           for(var i=0; i<file.length; i++){
-                // 上传校验逻辑
-            if (!ACCEPT.includes(file[i].type)) {
-                console.log(`不支持[${file[i].type}]类型`);
-                return
+            
+            const selectedFormat = formatSelect.value;
+            // 检查格式支持情况
+            if (selectedFormat && !supportedFormats[selectedFormat]) {
+                if (!confirm(`您的浏览器可能不支持${getFormatDisplayName(selectedFormat)}格式导出，是否继续？`)) {
+                    return;
+                }
             }
-            if (file[i].size > MAXSIZE) {
-                console.log(`文件超${MAXTIP}`);
-                return
-            }
-            console.log(file[i].name,file[i].size,file[i].type);
-            // 压缩图片 需要转成base64进行压缩
-            await convertImageToBase64(file[i],file[i].name, async (base64Image,name) => {
-                await compress(base64Image,name, uploadToServer)
-            });
-            await sleep(500);
-           }
+            
+            processFiles();
         });
+        
+        // 监听格式选择变化，显示兼容性警告
+        formatSelect.addEventListener('change', () => {
+            const selectedFormat = formatSelect.value;
+            if (selectedFormat && !supportedFormats[selectedFormat]) {
+                browserWarning.style.display = 'block';
+            } else {
+                browserWarning.style.display = 'none';
+            }
+        });
+
+        // 检测浏览器支持的图片格式
+        function detectSupportedFormats() {
+            const canvas = document.createElement('canvas');
+            const formats = {
+                jpeg: true,
+                png: true,
+                webp: canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0,
+                avif: canvas.toDataURL('image/avif').indexOf('data:image/avif') === 0,
+                bmp: canvas.toDataURL('image/bmp').indexOf('data:image/bmp') === 0,
+                heic: false, // 需要通过heic2any库检测
+                heif: false,
+                'x-icon': canvas.toDataURL('image/x-icon').indexOf('data:image/x-icon') === 0,
+                svg: true
+            };
+            
+            // 检测HEIC/HEIF支持
+            if (window.heic2any) {
+                formats.heic = true;
+                formats.heif = true;
+            }
+            
+            canvas.remove();
+            return formats;
+        }
+        
+        // 获取格式的显示名称
+        function getFormatDisplayName(format) {
+            const names = {
+                'jpeg': 'JPEG',
+                'png': 'PNG',
+                'webp': 'WebP',
+                'avif': 'AVIF',
+                'bmp': 'BMP',
+                'heic': 'HEIC',
+                'heif': 'HEIF',
+                'x-icon': 'ICO',
+                'svg': 'SVG'
+            };
+            return names[format] || format.toUpperCase();
+        }
+
+        // 处理选择的文件
+        function handleFiles(files) {
+            if (!files.length) return;
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                
+                // 验证文件类型
+                const fileType = file.type || getFileTypeByExtension(file.name);
+                if (!ACCEPTED_TYPES.includes(fileType)) {
+                    alert(`不支持 ${file.name} 的文件类型`);
+                    continue;
+                }
+                
+                // 验证文件大小
+                if (file.size > MAX_FILE_SIZE) {
+                    alert(`文件 ${file.name} 超过 150MB 限制`);
+                    continue;
+                }
+                
+                // 避免重复添加
+                if (!selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
+                    selectedFiles.push(file);
+                }
+            }
+            
+            renderFilesList();
+        }
+
+        // 渲染文件列表
+        function renderFilesList() {
+            filesList.innerHTML = '';
+            
+            if (selectedFiles.length === 0) {
+                filesList.innerHTML = '<p style="text-align: center; padding: 20px; color: var(--gray);">暂无选中的图片</p>';
+                return;
+            }
+            
+            selectedFiles.forEach((file, index) => {
+                const fileSize = formatFileSize(file.size);
+                const fileExt = getFileExtension(file.name).toUpperCase();
+                
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                
+                fileItem.innerHTML = `
+                    <div class="file-info">
+                        <div class="file-icon">🖼️</div>
+                        <div class="file-details">
+                            <div class="file-name">
+                                ${file.name}
+                                <span class="file-format">${fileExt}</span>
+                            </div>
+                            <div class="file-size">${fileSize}</div>
+                        </div>
+                    </div>
+                    <div class="file-actions">
+                        <button class="remove-file" data-index="${index}">×</button>
+                    </div>
+                `;
+                
+                filesList.appendChild(fileItem);
+            });
+            
+            // 添加删除事件监听
+            document.querySelectorAll('.remove-file').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = parseInt(e.currentTarget.dataset.index);
+                    selectedFiles.splice(index, 1);
+                    renderFilesList();
+                });
+            });
+        }
+
+        // 处理文件压缩
+        async function processFiles() {
+            showProcessingModal();
+            
+            const quality = parseFloat(document.getElementById('quality').value) || 0.7;
+            const format = document.getElementById('format').value;
+            const width = document.getElementById('width').value ? parseInt(document.getElementById('width').value) : null;
+            const height = document.getElementById('height').value ? parseInt(document.getElementById('height').value) : null;
+            
+            for (let i = 0; i < selectedFiles.length; i++) {
+                const file = selectedFiles[i];
+                updateProcessingText(`正在处理 ${file.name} (${i+1}/${selectedFiles.length})`);
+                
+                try {
+                    // 特殊格式处理
+                    const fileExt = getFileExtension(file.name).toLowerCase();
+                    
+                    // 处理HEIC/HEIF文件
+                    if (['heic', 'heif'].includes(fileExt)) {
+                        if (window.heic2any) {
+                            const canvas = await heic2any({ blob: file });
+                            const base64Image = canvas.toDataURL();
+                            await compressAndDownload(base64Image, file.name, quality, format, width, height);
+                        } else {
+                            alert('HEIC/HEIF转换功能未启用，请引入heic2any库');
+                        }
+                    } 
+                    // 处理SVG文件
+                    else if (fileExt === 'svg') {
+                        await processSvgFile(file, format, width, height);
+                    }
+                    // 处理PSD/RAW等专业格式
+                    else if (['psd', 'cr2', 'nef', 'arw', 'dng', 'orf', 'rw2', 'srw'].includes(fileExt)) {
+                        alert(`专业格式 ${fileExt.toUpperCase()} 处理中，可能会丢失图层信息`);
+                        await convertToBase64(file, async (base64Image) => {
+                            await compressAndDownload(base64Image, file.name, quality, format, width, height);
+                        });
+                    }
+                    // 处理TIFF文件
+                    else if (fileExt === 'tiff') {
+                        await convertToBase64(file, async (base64Image) => {
+                            await compressAndDownload(base64Image, file.name, quality, format, width, height);
+                        });
+                    }
+                    // 处理AVIF文件
+                    else if (fileExt === 'avif') {
+                        await convertToBase64(file, async (base64Image) => {
+                            await compressAndDownload(base64Image, file.name, quality, format, width, height);
+                        });
+                    }
+                    // 处理其他图片格式
+                    else {
+                        await convertToBase64(file, async (base64Image) => {
+                            await compressAndDownload(base64Image, file.name, quality, format, width, height);
+                        });
+                    }
+                } catch (error) {
+                    console.error('处理文件时出错:', error);
+                    alert(`处理 ${file.name} 时出错: ${error.message}`);
+                }
+                
+                await sleep(300); // 稍微延迟，避免浏览器卡顿
+            }
+            
+            hideProcessingModal();
+            // 处理完成后清空列表
+            selectedFiles = [];
+            renderFilesList();
+        }
+
+        // 处理SVG文件
+        async function processSvgFile(file, targetFormat, width, height) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                
+                reader.onload = async function(e) {
+                    try {
+                        // 如果目标格式是SVG，直接下载
+                        if (targetFormat === 'svg') {
+                            let svgContent = e.target.result;
+                            
+                            // 处理尺寸
+                            if (width || height) {
+                                // 简单的SVG尺寸调整逻辑
+                                const parser = new DOMParser();
+                                const svgDoc = parser.parseFromString(svgContent, "image/svg+xml");
+                                const svgElement = svgDoc.querySelector("svg");
+                                
+                                if (svgElement) {
+                                    if (width) svgElement.setAttribute("width", width);
+                                    if (height) svgElement.setAttribute("height", height);
+                                    
+                                    // 重新序列化
+                                    const serializer = new XMLSerializer();
+                                    svgContent = serializer.serializeToString(svgDoc);
+                                }
+                            }
+                            
+                            // 下载SVG
+                            const blob = new Blob([svgContent], {type: 'image/svg+xml'});
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = file.name.replace(/\.[^/.]+$/, "-compressed.svg");
+                            document.body.appendChild(a);
+                            a.click();
+                            setTimeout(() => {
+                                document.body.removeChild(a);
+                                URL.revokeObjectURL(url);
+                                resolve();
+                            }, 100);
+                        } 
+                        // 转换为其他格式
+                        else {
+                            // 将SVG绘制到Canvas再处理
+                            const image = new Image();
+                            image.onload = function() {
+                                const canvas = document.createElement('canvas');
+                                canvas.width = width || image.width;
+                                canvas.height = height || image.height;
+                                
+                                const ctx = canvas.getContext('2d');
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+                                
+                                handleCanvasConversion(canvas, file.name, targetFormat, quality, resolve);
+                            };
+                            image.src = e.target.result;
+                        }
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
+                
+                reader.readAsText(file); // SVG文件作为文本读取
+            });
+        }
+
+        // 处理Canvas转换为各种格式
+        function handleCanvasConversion(canvas, fileName, targetFormat, quality, resolve) {
+            // 对于HEIC/HEIF格式，使用heic2any库
+            if (['heic', 'heif'].includes(targetFormat)) {
+                if (window.heic2any) {
+                    canvas.toBlob(async (blob) => {
+                        const heicBlob = await heic2any({
+                            blob,
+                            toType: targetFormat,
+                            quality
+                        });
+                        const url = URL.createObjectURL(heicBlob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = fileName.replace(/\.[^/.]+$/, `.${targetFormat}`);
+                        document.body.appendChild(a);
+                        a.click();
+                        setTimeout(() => {
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                            resolve();
+                        }, 100);
+                    });
+                } else {
+                    alert('HEIC/HEIF转换需要heic2any库支持');
+                    resolve();
+                }
+                return;
+            }
+            
+            // 其他格式直接使用Canvas API
+            const mimeType = targetFormat ? `image/${targetFormat}` : 'image/png';
+            let dataUrl;
+            
+            try {
+                dataUrl = canvas.toDataURL(mimeType, quality);
+            } catch (e) {
+                console.warn(`不支持${mimeType}格式，将使用PNG格式替代`);
+                dataUrl = canvas.toDataURL('image/png');
+                targetFormat = 'png';
+            }
+            
+            const ext = targetFormat === 'x-icon' ? 'ico' : targetFormat || 'png';
+            const downloadName = fileName.replace(/\.[^/.]+$/, `.${ext}`);
+            
+            downloadImage(dataUrl, downloadName);
+            canvas.remove();
+            resolve();
+        }
+
+        // 压缩并下载图片
+        function compressAndDownload(base64Image, fileName, quality, targetFormat, width, height) {
+            return new Promise((resolve) => {
+                const image = new Image();
+                image.crossOrigin = 'anonymous';
+                
+                image.onload = function() {
+                    // 计算新尺寸
+                    let newWidth = width || image.naturalWidth;
+                    let newHeight = height || image.naturalHeight;
+                    
+                    // 保持比例
+                    if (width && !height) {
+                        const ratio = image.naturalHeight / image.naturalWidth;
+                        newHeight = Math.round(newWidth * ratio);
+                    } else if (!width && height) {
+                        const ratio = image.naturalWidth / image.naturalHeight;
+                        newWidth = Math.round(newHeight * ratio);
+                    }
+                    
+                    // 创建Canvas
+                    const canvas = document.createElement('canvas');
+                    canvas.width = newWidth;
+                    canvas.height = newHeight;
+                    
+                    const ctx = canvas.getContext('2d');
+                    ctx.clearRect(0, 0, newWidth, newHeight);
+                    ctx.drawImage(image, 0, 0, newWidth, newHeight);
+                    
+                    // 处理不同格式的转换
+                    handleCanvasConversion(canvas, fileName, targetFormat, quality, resolve);
+                };
+                
+                image.src = base64Image;
+            });
+        }
+
+        // 工具函数
+        function convertToBase64(file, callback) {
+            const reader = new FileReader();
+            reader.onload = (e) => callback(e.target.result);
+            reader.readAsDataURL(file);
+        }
+
+        function downloadImage(base64Str, fileName) {
+            const a = document.createElement('a');
+            a.href = base64Str;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(base64Str);
+            }, 100);
+        }
+
+        // 扩展文件类型检测映射表
+        function getFileTypeByExtension(fileName) {
+            const ext = fileName.split('.').pop().toLowerCase();
+            const extMap = {
+                jpg: 'image/jpeg',
+                jpeg: 'image/jpeg',
+                png: 'image/png',
+                webp: 'image/webp',
+                ico: 'image/x-icon',
+                heic: 'image/heic',
+                heif: 'image/heif',
+                avif: 'image/avif',
+                gif: 'image/gif',
+                bmp: 'image/bmp',
+                svg: 'image/svg+xml',
+                tiff: 'image/tiff',
+                psd: 'image/vnd.adobe.photoshop',
+                cr2: 'image/x-canon-cr2',
+                nef: 'image/x-nikon-nef',
+                arw: 'image/x-sony-arw',
+                dng: 'image/x-adobe-dng',
+                orf: 'image/x-olympus-orf',
+                rw2: 'image/x-panasonic-rw2',
+                srw: 'image/x-samsung-srw'
+            };
+            return extMap[ext] || '';
+        }
+
+        function getFileExtension(fileName) {
+            return fileName.split('.').pop().toLowerCase();
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+            else return (bytes / 1048576).toFixed(1) + ' MB';
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function showProcessingModal() {
+            processingModal.classList.add('active');
+        }
+
+        function hideProcessingModal() {
+            processingModal.classList.remove('active');
+        }
+
+        function updateProcessingText(text) {
+            processingText.textContent = text;
+        }
+
+        // 初始化文件列表
+        renderFilesList();
     </script>
-<script>
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "https://hm.baidu.com/hm.js?70068650f6a62905f9895fd846215077";
-      var s = document.getElementsByTagName("script")[0]; 
-      s.parentNode.insertBefore(hm, s);
-    })();
-    </script>
-    
+
+    <!-- 引入HEIC转换库 -->
+    <script src="https://cdn.jsdelivr.net/npm/heic2any@latest/dist/heic2any.bundle.js"></script>
 </body>
 </html>
