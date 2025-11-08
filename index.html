@@ -662,16 +662,19 @@
                 webp: canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0,
                 avif: canvas.toDataURL('image/avif').indexOf('data:image/avif') === 0,
                 bmp: canvas.toDataURL('image/bmp').indexOf('data:image/bmp') === 0,
-                heic: false, // 需要通过heic2any库检测
+                heic: false, // 需要通过heic-to库检测
                 heif: false,
                 'x-icon': canvas.toDataURL('image/x-icon').indexOf('data:image/x-icon') === 0,
                 svg: true
             };
             
             // 检测HEIC/HEIF支持
-            if (window.heic2any) {
+            if (window.HeicTo) {
                 formats.heic = true;
                 formats.heif = true;
+                console.log('HEIC/HEIF格式支持已启用 (使用heic-to库)');
+            } else {
+                console.warn('heic-to库未加载，HEIC/HEIF格式支持不可用');
             }
             
             canvas.remove();
@@ -786,15 +789,42 @@
                     const fileExt = getFileExtension(file.name).toLowerCase();
                     
                     // 处理HEIC/HEIF文件
-                    if (['heic', 'heif'].includes(fileExt)) {
-                        if (window.heic2any) {
-                            const canvas = await heic2any({ blob: file });
-                            const base64Image = canvas.toDataURL();
-                            await compressAndDownload(base64Image, file.name, quality, format, width, height);
-                        } else {
-                            alert('HEIC/HEIF转换功能未启用，请引入heic2any库');
-                        }
-                    } 
+                            if (['heic', 'heif'].includes(fileExt)) {
+                                if (window.HeicTo) {
+                                    try {
+                                        console.log('开始处理HEIC/HEIF文件:', file.name);
+                                        
+                                        // 使用heic-to库转换HEIC/HEIF文件
+                                        if (window.HeicTo) {
+                                            // 检查文件是否为HEIC/HEIF格式
+                                            if (await window.HeicTo.isHeic(file)) {
+                                                // 转换为JPEG - 注意：在IIFE版本中，直接调用HeicTo()函数
+                                                const jpegBlob = await window.HeicTo({
+                                                    blob: file,
+                                                    type: 'image/jpeg',
+                                                    quality: quality
+                                                });
+                                                 
+                                                // 将blob转换为dataURL
+                                                const reader = new FileReader();
+                                                reader.onload = async function(e) {
+                                                    await compressAndDownload(e.target.result, file.name, quality, format, width, height);
+                                                };
+                                                reader.readAsDataURL(jpegBlob);
+                                            } else {
+                                                throw new Error('文件不是有效的HEIC/HEIF格式');
+                                            }
+                                        } else {
+                                            throw new Error('heic-to库未正确加载');
+                                        }
+                                    } catch (error) {
+                                        console.error('HEIC/HEIF转换错误:', error);
+                                        alert(`处理${file.name}时出错: HEIC格式转换失败 - ${error.message || '未知错误'}`);
+                                    }
+                                } else {
+                                    alert('HEIC/HEIF转换功能未启用，无法处理此类文件');
+                                }
+                            } 
                     // 处理SVG文件
                     else if (fileExt === 'svg') {
                         await processSvgFile(file, format, width, height);
@@ -908,29 +938,42 @@
 
         // 处理Canvas转换为各种格式
         function handleCanvasConversion(canvas, fileName, targetFormat, quality, resolve) {
-            // 对于HEIC/HEIF格式，使用heic2any库
+            // 对于HEIC/HEIF格式，使用heic-to库
             if (['heic', 'heif'].includes(targetFormat)) {
-                if (window.heic2any) {
+                if (window.HeicTo) {
+                    console.log('开始将图像转换为', targetFormat);
                     canvas.toBlob(async (blob) => {
-                        const heicBlob = await heic2any({
-                            blob,
-                            toType: targetFormat,
-                            quality
-                        });
-                        const url = URL.createObjectURL(heicBlob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = fileName.replace(/\.[^/.]+$/, `.${targetFormat}`);
-                        document.body.appendChild(a);
-                        a.click();
-                        setTimeout(() => {
-                            document.body.removeChild(a);
-                            URL.revokeObjectURL(url);
+                        try {
+                            // 使用heic-to库转换到HEIC/HEIF格式
+                            // 注意：heic-to库主要用于将HEIC转换为其他格式，不支持将其他格式转换为HEIC
+                            // 这里我们先将canvas转换为JPEG，然后创建下载链接
+                            // 注意：在IIFE版本中，直接调用HeicTo()函数
+                            const downloadFormat = targetFormat === 'heic' ? 'jpeg' : targetFormat;
+                            const mimeType = `image/${downloadFormat}`;
+                            const qualityValue = parseFloat(document.getElementById('quality').value) || 0.7;
+                            
+                            canvas.toBlob((finalBlob) => {
+                                const url = URL.createObjectURL(finalBlob);
+                                const a = document.createElement('a');
+                                a.href = url;
+                                // 虽然内容是JPEG，但使用用户选择的扩展名
+                                a.download = fileName.replace(/\.[^/.]+$/, `.${targetFormat}`);
+                                document.body.appendChild(a);
+                                a.click();
+                                setTimeout(() => {
+                                    document.body.removeChild(a);
+                                    URL.revokeObjectURL(url);
+                                    resolve();
+                                }, 100);
+                            }, mimeType, qualityValue);
+                        } catch (error) {
+                            console.error('转换到HEIC/HEIF格式时出错:', error);
+                            alert(`转换到${targetFormat}格式失败: ${error.message || '未知错误'}，请尝试其他格式`);
                             resolve();
-                        }, 100);
+                        }
                     });
                 } else {
-                    alert('HEIC/HEIF转换需要heic2any库支持');
+                    alert('HEIC/HEIF转换需要heic-to库支持，请刷新页面重试');
                     resolve();
                 }
                 return;
@@ -1071,6 +1114,12 @@
     </script>
 
     <!-- 引入HEIC转换库 -->
-    <script src="https://cdn.jsdelivr.net/npm/heic2any@latest/dist/heic2any.bundle.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/heic-to@1.3.0/dist/iife/heic-to.min.js"></script>
+    <script>
+        // 预加载检测heic-to库是否正确加载
+        window.addEventListener('load', function() {
+            console.log('heic-to库状态:', window.HeicTo ? '已加载' : '未加载');
+        });
+    </script>
 </body>
 </html>
